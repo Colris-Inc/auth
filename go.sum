@@ -1,2 +1,4 @@
+github.com/Colris-Inc/jwt-go v1.0.0-pre h1:Vw78lJkP/OoA+2HCdKfXwmDJkiK5/RRKNVHEhhN1Xhc=
+github.com/Colris-Inc/jwt-go v1.0.0-pre/go.mod h1:ZAH+UfkdywuXv+R6PWrxUJeqsHaGvkt/3933oPEOYjE=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
