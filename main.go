@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	authmiddleware "github.com/Colris-Inc/auth/auth-middleware"
 )
 
 func main() {
@@ -25,14 +27,29 @@ func main() {
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	(w).Header().Set("Access-Control-Allow-Origin", "*")
+	authToken := r.Header.Get("Authorization")
+	if authToken == "" {
+		w.WriteHeader(401)
+		fmt.Fprint(w, `{"message": "Auth Token Missing"}`)
+		return
+	} else {
+		authStatus := authmiddleware.IsAuthenticated(authToken)
+		if !authStatus {
+			w.WriteHeader(401)
+			fmt.Fprint(w, `{"message": "Invalid Auth Token"}`)
+			return
+		}
+	}
 	JSONVal, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("[ERROR] " + err.Error())
 		fmt.Fprint(w, `{response: `+err.Error()+`}`)
+		return
 	}
 	if r.Method != "POST" {
 		w.WriteHeader(403)
 		fmt.Fprint(w, `{response: POST method expected}`)
+		return
 	} else {
 		response := registerUserHandler(string(JSONVal))
 		fmt.Fprint(w, response)

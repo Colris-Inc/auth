@@ -49,7 +49,8 @@ func createPasswordResetDate() string {
 	return response
 }
 
-func registerUser(userName string, firstName string, lastName string, mobileNumber int,
+//RegisterUser registers a new user into the application
+func RegisterUser(userName string, firstName string, lastName string, mobileNumber int,
 	email string, password string, roles []string) error {
 	db, err := connectDB()
 	if err != nil {
