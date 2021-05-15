@@ -1,43 +1,41 @@
 package db
 
 import (
-	"context"
+	"database/sql"
+	"fmt"
 	"log"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	config "github.com/Colris-Inc/auth/configurations"
+	_ "github.com/lib/pq"
 )
 
-type MongoClient struct {
-	ConnectionString string
-}
+var (
+	dbHost     = config.AppConfig.DBHost
+	dbPort     = config.AppConfig.DBPort
+	dbUser     = config.AppConfig.DBUser
+	dbPassword = config.AppConfig.DBPassword
+	dbName     = config.AppConfig.DBName
+)
 
-//connectDB connects with the DB and does a ping to test the connection
-//if the connection is successful, it returns a mongo client for further operations
-func connectDB(connectionString string) (*mongo.Client, error) {
-	clientOpts := options.Client().ApplyURI(connectionString)
-	client, err := mongo.Connect(context.TODO(), clientOpts)
+func connectDB() (*sql.DB, error) {
+	var db *sql.DB
+	var err error
 
+	log.Println("opening DB connection")
+	sqlconn := ``
+	sqlconn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, dbUser, dbPassword, dbName)
+
+	db, err = sql.Open("postgres", sqlconn)
 	if err != nil {
-		log.Println(err.Error())
 		return nil, err
 	}
 
-	err = client.Ping(context.TODO(), readpref.Primary())
-
+	err = db.Ping()
 	if err != nil {
-		log.Println(err.Error())
 		return nil, err
 	}
+	log.Println("Connected to DB")
 
-	return client, err
-}
-
-//disconnectDB disconnects the current
-func disconnectDB(client *mongo.Client) {
-	err := client.Disconnect(context.TODO())
-	if err != nil {
-		log.Fatalln(err)
-	}
+	return db, err
 }

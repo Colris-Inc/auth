@@ -15,7 +15,7 @@ func main() {
 	http.HandleFunc("/v0/registerUser", registerUser)
 	//using register user as dummy for now
 	http.HandleFunc("/v0/login", login)
-	http.HandleFunc("/v0/loout", logout)
+	http.HandleFunc("/v0/logout", logout)
 	http.HandleFunc("/v0/userInfo", userInfo)
 	http.HandleFunc("/v0/refresh", refresh)
 	http.HandleFunc("/v0/updatePassword", updatePassword)
