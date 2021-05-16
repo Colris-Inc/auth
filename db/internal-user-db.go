@@ -69,3 +69,53 @@ func RegisterUser(userName string, firstName string, lastName string, mobileNumb
 		mobileNumber, true)
 	return err
 }
+
+//UpdatePassword updates the current password and resets the password_reset date
+func UpdatePassword(identifier string, currentPassword string, updatePassword string) error {
+	var err error
+	db, err := connectDB()
+	if err != nil {
+		log.Println(`[ERROR occured] ` + err.Error())
+		return err
+	}
+	defer db.Close()
+	resetPassword := createPasswordResetDate()
+	query := `update internal_users set password='` + updatePassword + `', password_reset='` + resetPassword +
+		`' where (user_name='` + identifier + `' or email='` + identifier + `') and password='` + currentPassword + `'`
+	_, err = db.Exec(query)
+	return err
+}
+
+//FetchPassword fetches password from DB and returns it
+func FetchPassword(identifier string) (string, error) {
+	var response string
+	var err error
+	db, err := connectDB()
+	if err != nil {
+		log.Println(`[ERROR occured] ` + err.Error())
+		return "", err
+	}
+	defer db.Close()
+	query := "select password from internal_users where user_name='" + identifier + "' or email='" + identifier + "'"
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Println(`[ERROR occured] ` + err.Error())
+		return "", err
+	}
+
+	defer rows.Close()
+	var password string
+	status := rows.Next()
+	if status {
+		err = rows.Scan(&password)
+		if err != nil {
+			log.Println(`[ERROR occured] ` + err.Error())
+			return "", err
+		}
+		response = password
+	} else {
+		log.Println("no password available for " + identifier)
+		err = nil
+	}
+	return response, err
+}

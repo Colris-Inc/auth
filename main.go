@@ -15,7 +15,6 @@ func main() {
 	//include code for start up service
 
 	http.HandleFunc("/v0/registerUser", registerUser)
-	//using register user as dummy for now
 	http.HandleFunc("/v0/login", login)
 	http.HandleFunc("/v0/logout", logout)
 	http.HandleFunc("/v0/userInfo", userInfo)
